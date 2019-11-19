@@ -1,2 +1,0 @@
-# FredtheSmartFrog
-Wooohoooo! Game time!!!

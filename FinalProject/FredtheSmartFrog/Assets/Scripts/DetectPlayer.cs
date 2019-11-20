@@ -13,7 +13,7 @@ public class DetectPlayer : MonoBehaviour
     public Vector3 playerLastKnownPos;
 
     private SphereCollider _sCol;
-    private GameObject _player;
+    [SerializeField] private GameObject _player;
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +28,6 @@ public class DetectPlayer : MonoBehaviour
         if (other.gameObject == _player)
         {
             playerInSight = false;
-            print(other.name);
             // Get direction from scientist to player
             Vector3 direction = other.transform.position - transform.position;
             // Get angle from direction of player to scientist's forward vector
@@ -39,7 +38,7 @@ public class DetectPlayer : MonoBehaviour
             {
                 // Shoot raycast to see if nothing is blocking view
                 RaycastHit hit;
-                if (Physics.Raycast(transform.position + transform.up, direction.normalized, out hit, _sCol.radius, thingsItCanSee))
+                if (Physics.Raycast(transform.position, direction.normalized, out hit, _sCol.radius, thingsItCanSee))
                 {
                     if (hit.collider.gameObject == _player)
                     {

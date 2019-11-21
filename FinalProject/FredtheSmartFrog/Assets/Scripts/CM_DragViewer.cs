@@ -17,7 +17,8 @@ public class CM_DragViewer : MonoBehaviour
     void Update()
     {
         CinemachineTransposer ct = _vcam.GetCinemachineComponent<CinemachineTransposer>();
-        ct.m_FollowOffset = Quaternion.AngleAxis(_touchfield.TouchDist.x, Vector3.up) * ct.m_FollowOffset;
-        ct.m_FollowOffset = Quaternion.AngleAxis(_touchfield.TouchDist.y, Vector3.right) * ct.m_FollowOffset;
+        ct.m_FollowOffset = Quaternion.AngleAxis(_touchfield.TouchDist.x * 0.25f, Vector3.up) * ct.m_FollowOffset;
+        //ct.m_FollowOffset = Quaternion.AngleAxis(_touchfield.TouchDist.y, Vector3.right) * ct.m_FollowOffset;
+        ct.m_FollowOffset += Vector3.up * _touchfield.TouchDist.y * 0.25f;
     }
 }

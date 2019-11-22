@@ -10,9 +10,9 @@ public class PlayerController : MonoBehaviour
     public Transform cm_cam;
     public Transform body;
     public bool dead = false;
-
-    private FixedJoystick _jstick;
     public FixedButton _jumpbtn;
+    
+    private FixedJoystick _jstick;
     private Rigidbody _rb;
     private Collider _col;
 

@@ -1,21 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 using UnityEngine.AI;
+using System.Linq;
 
 public class Scientist : MonoBehaviour
 {
-    const int PLAYER_LAYER = 1 << 9, WALL_LAYER = 1 << 10;
-
     public float maxSpeed = 3;
-
-    //public float detectionRadius = 10;  // old
+    public Transform[] paths;
+    public Transform rightHand;
 
     public float Speed
     {
         get { return _speed; }
-        set { _speed = value; _anim.SetFloat("speed", value); }
+        set 
+        { 
+            _speed = value;
+            //_anim.SetFloat("speed", Mathf.Abs(value), 0.1f, Time.deltaTime); 
+            _anim.SetFloat("speed", value);
+        }
     }
 
     private float _speed;
@@ -23,31 +26,66 @@ public class Scientist : MonoBehaviour
     private Rigidbody _rb;
     private DetectPlayer _detection;
     private NavMeshAgent _agent;
-    //private bool _playerFound = false;  // old
+    private bool _waiting = false;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _anim = GetComponent<Animator>();
         _rb = GetComponent<Rigidbody>();
-        _detection = GetComponent<DetectPlayer>();
+        _detection = GetComponentInChildren<DetectPlayer>();
         _agent = GetComponent<NavMeshAgent>();
         _speed = maxSpeed;
+
+        if (paths.Length == 1)
+        {
+            var ps = paths[0].GetComponentsInChildren<Transform>().ToList();
+            ps.Remove(ps.First());
+            paths = ps.ToArray();
+        }
+    }
+
+    private void Start()
+    {
+        StartCoroutine(WaitForNewPath(0));
     }
 
     // Update is called once per frame
     void Update()
     {
-        _anim.SetFloat("speed", _agent.velocity.normalized.magnitude);
-        updateDetection();
+        //_anim.SetFloat("speed", _agent.velocity.normalized.magnitude);
+        //_anim.SetFloat("speed", Mathf.Abs(_agent.velocity.z), 0.1f, Time.deltaTime);
+        updatePath();
     }
 
-    void updateDetection()
+    void updatePath()
     {
         if (_detection.playerInSight)
         {
             _agent.SetDestination(_detection.playerLastKnownPos);
+            _agent.speed = maxSpeed * 2;
+            Speed = 1;
         }
+        else if (_agent.remainingDistance < 0.1f && !_waiting)
+        {
+            StartCoroutine(WaitForNewPath(5f));
+        }
+    }
+
+    IEnumerator WaitForNewPath(float sec)
+    {
+        _waiting = true;
+        Speed = 0;
+        yield return new WaitForSeconds(sec);
+        _agent.SetDestination(GetNewPath());
+        _agent.speed = maxSpeed * 0.5f;
+        Speed = 0.5f;
+        yield return new WaitForSeconds(0.5f);
+        _waiting = false;
+    }
+
+    Vector3 GetNewPath()
+    {
+        return paths[Random.Range(0, paths.Length)].position;
     }
 
     //void HandleDetectionOld()
@@ -70,8 +108,25 @@ public class Scientist : MonoBehaviour
     //    else _playerFound = false;
     //}
 
-    void HandleMovement()
+    private void OnCollisionEnter(Collision collision)
     {
-        
+        if (collision.collider.gameObject.tag == "Player")
+        {
+            _agent.isStopped = true;
+            collision.collider.GetComponent<PlayerController>().dead = true;
+            _anim.SetTrigger("pickup");
+            StartCoroutine(PickUpFrog(collision.transform));
+            Destroy(collision.gameObject.GetComponent<Rigidbody>());
+            _rb.constraints = RigidbodyConstraints.FreezeAll;
+        }
+    }
+
+    IEnumerator PickUpFrog(Transform frog)
+    {
+        yield return new WaitForSeconds(1.25f);
+        frog.SetParent(rightHand);
+        frog.localPosition = new Vector3(0,0,-0.005f);
+        frog.rotation = new Quaternion();
+        frog.Rotate(Vector3.up, 80);
     }
 }

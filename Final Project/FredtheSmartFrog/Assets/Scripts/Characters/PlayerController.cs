@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -18,6 +20,11 @@ public class PlayerController : MonoBehaviour
 
     private bool _jumping = false;
 
+    //static int timesReloaded = 0;
+    //public Text lives3;
+    //public Text lives2;
+    //public Text lives1;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,11 +32,19 @@ public class PlayerController : MonoBehaviour
         if (!body) body = transform.Find("frog");                               // this pertains to frog prefab
 
         _jstick = FindObjectOfType<FixedJoystick>();
-        //_jumpbtn = FindObjectOfType<FixedButton>();
+        _jumpbtn = FindObjectOfType<FixedButton>();
         _rb = GetComponent<Rigidbody>();
         _col = GetComponent<Collider>();
-    }
 
+        //lives3.gameObject.SetActive(true);
+        //lives2.gameObject.SetActive(false);
+        //lives1.gameObject.SetActive(false);
+    }
+    IEnumerator waitForDeath()
+    {
+        yield return new WaitForSeconds(2);
+        SceneManager.LoadScene("Easy");
+    }
     // Update is called once per frame
     void Update()
     {
@@ -41,6 +56,35 @@ public class PlayerController : MonoBehaviour
         else
         {
             _col.enabled = false;
+            StartCoroutine(waitForDeath());
+            /*if(timesReloaded < 3)
+            {
+                timesReloaded++;
+                Debug.Log("Times: " + timesReloaded);
+                lives3.gameObject.SetActive(true);
+                if (timesReloaded == 1)
+                {
+                    StartCoroutine(waitForDeath());
+                    SceneManager.LoadScene("GameScene");
+                    lives3.gameObject.SetActive(false);
+                    lives2.gameObject.SetActive(true);
+                    lives1.gameObject.SetActive(false);
+                }
+                else if (timesReloaded == 2)
+                {
+                    StartCoroutine(waitForDeath());
+                    //SceneManager.LoadScene("GameScene");
+                    lives3.gameObject.SetActive(false);
+                    lives2.gameObject.SetActive(false);
+                    lives1.gameObject.SetActive(true);
+                }
+            }
+            else
+            {
+                //SceneManager.LoadScene("GameScene");
+                Debug.Log("Error");
+                SceneManager.LoadScene("GameOver");
+            }*/
         }
     }
 

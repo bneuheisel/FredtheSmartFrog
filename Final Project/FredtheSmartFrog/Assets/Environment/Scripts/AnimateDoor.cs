@@ -9,14 +9,22 @@ public class AnimateDoor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") || other.CompareTag("Scientist"))
+        if (other.CompareTag("Scientist"))
         {
             myAnimationController.SetBool("character_nearby", true);
-        } 
+        }
+        else if (other.CompareTag("Player"))
+        {
+            myAnimationController.SetBool("character_nearby", true);
+        }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player") || other.CompareTag("Scientist"))
+        if (other.CompareTag("Scientist"))
+        {
+            myAnimationController.SetBool("character_nearby", false);
+        }
+        else if (other.CompareTag("Player"))
         {
             myAnimationController.SetBool("character_nearby", false);
         }

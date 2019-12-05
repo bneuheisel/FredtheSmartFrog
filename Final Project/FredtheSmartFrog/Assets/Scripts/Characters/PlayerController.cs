@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!cm_cam) cm_cam = GameObject.Find("ThirdPersonCamera").transform;   // this assumes such a camera exists
+        if (!cm_cam) cm_cam = Camera.main.transform;
         if (!body) body = transform.Find("frog");                               // this pertains to frog prefab
 
         _jstick = FindObjectOfType<FixedJoystick>();

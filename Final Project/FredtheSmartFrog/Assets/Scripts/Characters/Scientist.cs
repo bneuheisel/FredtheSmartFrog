@@ -27,6 +27,7 @@ public class Scientist : MonoBehaviour
     private DetectPlayer _detection;
     private NavMeshAgent _agent;
     private bool _waiting = false;
+    private Coroutine _pickUpAction;
 
     void Awake()
     {
@@ -113,20 +114,41 @@ public class Scientist : MonoBehaviour
         if (collision.collider.gameObject.tag == "Player")
         {
             _agent.isStopped = true;
-            collision.collider.GetComponent<PlayerController>().dead = true;
             _anim.SetTrigger("pickup");
-            StartCoroutine(PickUpFrog(collision.transform));
-            Destroy(collision.gameObject.GetComponent<Rigidbody>());
-            _rb.constraints = RigidbodyConstraints.FreezeAll;
+            if (_pickUpAction == null) _pickUpAction = StartCoroutine(PickUpFrog(collision.gameObject));
         }
     }
 
-    IEnumerator PickUpFrog(Transform frog)
+    IEnumerator PickUpFrog(GameObject frog)
     {
-        yield return new WaitForSeconds(1.25f);
-        frog.SetParent(rightHand);
-        frog.localPosition = new Vector3(0,0,-0.005f);
-        frog.rotation = new Quaternion();
-        frog.Rotate(Vector3.up, 80);
+        bool frogCaptured = false;
+        var currentConstraints = _rb.constraints;
+
+        _agent.isStopped = true;
+        _rb.constraints = RigidbodyConstraints.FreezeAll;
+
+        yield return new WaitForSeconds(1.25f);       
+
+        // Capture frog if frog is within grasp
+        if (Vector3.Distance(transform.position, frog.transform.position) < 3f)
+        {
+            frogCaptured = true;
+            frog.GetComponent<PlayerController>().dead = true;
+            Destroy(frog.GetComponent<Rigidbody>());
+            frog.transform.SetParent(rightHand);
+            frog.transform.localPosition = new Vector3(0, 0, -0.005f);
+            frog.transform.rotation = new Quaternion();
+            frog.transform.Rotate(Vector3.up, 80);
+        }
+        
+        // Unfreeze depending whether frog is captured
+        if (!frogCaptured)
+        {
+            _rb.constraints = currentConstraints;
+            _anim.SetTrigger("resume");
+            _agent.isStopped = false;
+        }
+
+        _pickUpAction = null;
     }
 }

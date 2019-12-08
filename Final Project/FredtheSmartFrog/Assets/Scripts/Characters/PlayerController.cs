@@ -21,6 +21,10 @@ public class PlayerController : MonoBehaviour
     private bool _jumping = false;
 
     //static int timesReloaded = 0;
+
+    //public Animator anim;
+    //public Image black;
+
     //public Text lives3;
     //public Text lives2;
     //public Text lives1;
@@ -36,6 +40,8 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _col = GetComponent<Collider>();
 
+        //anim.SetBool("Fade", false);
+
         //lives3.gameObject.SetActive(true);
         //lives2.gameObject.SetActive(false);
         //lives1.gameObject.SetActive(false);
@@ -43,7 +49,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator waitForDeath()
     {
         yield return new WaitForSeconds(2);
-        SceneManager.LoadScene("Easy");
+        SceneManager.LoadScene("GameOver");
     }
     // Update is called once per frame
     void Update()
@@ -61,29 +67,24 @@ public class PlayerController : MonoBehaviour
             {
                 timesReloaded++;
                 Debug.Log("Times: " + timesReloaded);
-                lives3.gameObject.SetActive(true);
+                //lives3.gameObject.SetActive(true);
                 if (timesReloaded == 1)
                 {
                     StartCoroutine(waitForDeath());
-                    SceneManager.LoadScene("GameScene");
-                    lives3.gameObject.SetActive(false);
-                    lives2.gameObject.SetActive(true);
-                    lives1.gameObject.SetActive(false);
+                    SceneManager.LoadScene("MainMenu");
+                    
                 }
                 else if (timesReloaded == 2)
                 {
-                    StartCoroutine(waitForDeath());
-                    //SceneManager.LoadScene("GameScene");
-                    lives3.gameObject.SetActive(false);
-                    lives2.gameObject.SetActive(false);
-                    lives1.gameObject.SetActive(true);
+                    SceneManager.LoadScene("MainMenu");
+                    
                 }
             }
             else
             {
                 //SceneManager.LoadScene("GameScene");
                 Debug.Log("Error");
-                SceneManager.LoadScene("GameOver");
+                SceneManager.LoadScene("MainMenu");
             }*/
         }
     }
@@ -140,4 +141,10 @@ public class PlayerController : MonoBehaviour
             _jumping = false;
         }
     }
+    /*IEnumerator fade()
+    {
+        anim.SetBool("Fade", true);
+        yield return new WaitUntil(() => black.color.a == 1);
+        SceneManager.LoadScene("MainMenu");
+    }*/
 }

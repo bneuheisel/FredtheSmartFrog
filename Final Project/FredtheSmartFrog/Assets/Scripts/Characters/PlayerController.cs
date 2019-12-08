@@ -12,9 +12,9 @@ public class PlayerController : MonoBehaviour
     public Transform cm_cam;
     public Transform body;
     public bool dead = false;
-
-    private FixedJoystick _jstick;
     public FixedButton _jumpbtn;
+    
+    private FixedJoystick _jstick;
     private Rigidbody _rb;
     private Collider _col;
 
@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!cm_cam) cm_cam = GameObject.Find("ThirdPersonCamera").transform;   // this assumes such a camera exists
+        if (!cm_cam) cm_cam = Camera.main.transform;
         if (!body) body = transform.Find("frog");                               // this pertains to frog prefab
 
         _jstick = FindObjectOfType<FixedJoystick>();

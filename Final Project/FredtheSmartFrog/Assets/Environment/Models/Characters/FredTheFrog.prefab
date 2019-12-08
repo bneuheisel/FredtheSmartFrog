@@ -81,7 +81,7 @@ MonoBehaviour:
   body: {fileID: 8759489814329843651}
   dead: 0
   _jumpbtn: {fileID: 0}
---- !u!95 &1015380627
+--- !u!95 &4423389840644437266
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -92,7 +92,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 25116dccd487cec45a03e4f9984eb4ed, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -100,7 +100,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1015380628
+--- !u!114 &7359229745281801948
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
